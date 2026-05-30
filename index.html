@@ -1203,6 +1203,23 @@ html,body{
   .seat{min-height:82px!important}
 }
 
+
+/* AVATARES SVG VISÍVEIS */
+.avatarFace{
+  background:none!important;
+}
+.avatarImg{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  border-radius:50%;
+}
+.avatarFace:before,
+.avatarFace:after{
+  display:none!important;
+}
+
 </style>
 </head>
 
@@ -1447,16 +1464,16 @@ const RV = {2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,J:11,Q:12,K:13,A:14};
 const REDS = new Set(["♥","♦"]);
 
 const AVATARS = [
-  {id:"pac", name:"2PAC", initial:"2", bg:"linear-gradient(135deg,#3a2419,#a76b35)"},
-  {id:"big", name:"BIGGIE", initial:"B", bg:"linear-gradient(135deg,#1b1b1b,#8d5a2b)"},
-  {id:"em", name:"EMINEM", initial:"E", bg:"linear-gradient(135deg,#d9c4a1,#222)"},
-  {id:"snoop", name:"SNOOP", initial:"S", bg:"linear-gradient(135deg,#111,#3b7a42)"},
-  {id:"dre", name:"DR. DRE", initial:"D", bg:"linear-gradient(135deg,#2b1b13,#916139)"},
-  {id:"jay", name:"JAY-Z", initial:"J", bg:"linear-gradient(135deg,#111,#1c2b48)"},
-  {id:"fifty", name:"50 CENT", initial:"5", bg:"linear-gradient(135deg,#1b1b1b,#5f5f5f)"},
-  {id:"kendrick", name:"KENDRICK", initial:"K", bg:"linear-gradient(135deg,#4f2c1d,#efdfc5)"},
-  {id:"travis", name:"TRAVIS", initial:"T", bg:"linear-gradient(135deg,#1c1511,#75543b)"},
-  {id:"post", name:"POST", initial:"P", bg:"linear-gradient(135deg,#d2b28a,#222)"}
+  {id:"pac", name:"2PAC", initial:"2", skin:"#9b5b34", hat:"#1f1f1f", shirt:"#111111", accent:"#d5a83e"},
+  {id:"big", name:"BIGGIE", initial:"B", skin:"#6f3f25", hat:"#d5a83e", shirt:"#8b1e1e", accent:"#f2d27a"},
+  {id:"em", name:"EMINEM", initial:"E", skin:"#e6c19a", hat:"#d8c7a8", shirt:"#111111", accent:"#f2d27a"},
+  {id:"snoop", name:"SNOOP", initial:"S", skin:"#8b4f2d", hat:"#111111", shirt:"#0c0c0c", accent:"#d5a83e"},
+  {id:"dre", name:"DR. DRE", initial:"D", skin:"#7b492e", hat:"#222222", shirt:"#111111", accent:"#999999"},
+  {id:"jay", name:"JAY-Z", initial:"J", skin:"#6e3f27", hat:"#111111", shirt:"#0b1626", accent:"#d5a83e"},
+  {id:"fifty", name:"50 CENT", initial:"5", skin:"#7c492d", hat:"#111111", shirt:"#ffffff", accent:"#d5a83e"},
+  {id:"kendrick", name:"KENDRICK", initial:"K", skin:"#7a4328", hat:"#333333", shirt:"#dddddd", accent:"#d5a83e"},
+  {id:"travis", name:"TRAVIS", initial:"T", skin:"#7f4a30", hat:"#1b1b1b", shirt:"#111111", accent:"#d5a83e"},
+  {id:"post", name:"POST", initial:"P", skin:"#d1a27b", hat:"#6b4d2e", shirt:"#0b2c19", accent:"#d5a83e"}
 ];
 
 let selectedAvatarCreate = "";
@@ -1701,10 +1718,37 @@ function playersArray(){
 function avatarById(id){
   return AVATARS.find(a=>a.id===id) || AVATARS[0];
 }
+function avatarSvgData(a){
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <defs>
+      <radialGradient id="bg" cx="50%" cy="35%" r="70%">
+        <stop offset="0%" stop-color="#16492b"/>
+        <stop offset="100%" stop-color="#06130b"/>
+      </radialGradient>
+      <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity=".55"/>
+      </filter>
+    </defs>
+    <rect width="120" height="120" rx="60" fill="url(#bg)"/>
+    <circle cx="60" cy="60" r="56" fill="none" stroke="#d5a83e" stroke-width="5"/>
+    <path d="M25 104c6-25 21-36 35-36s29 11 35 36" fill="${a.shirt}" filter="url(#shadow)"/>
+    <circle cx="60" cy="48" r="25" fill="${a.skin}" filter="url(#shadow)"/>
+    <path d="M36 39c8-20 40-20 48 0 0-18-10-28-24-28S36 21 36 39z" fill="${a.hat}"/>
+    <path d="M37 40c7-8 39-8 46 0" fill="none" stroke="${a.accent}" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="50" cy="50" r="3" fill="#111"/>
+    <circle cx="70" cy="50" r="3" fill="#111"/>
+    <path d="M50 66c8 5 16 5 24 0" fill="none" stroke="#22110a" stroke-width="4" stroke-linecap="round"/>
+    <path d="M43 88c10 9 24 11 34 0" fill="none" stroke="${a.accent}" stroke-width="5" stroke-linecap="round"/>
+    <text x="60" y="112" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="900" fill="#ffffff" stroke="#000" stroke-width="3" paint-order="stroke">${a.initial}</text>
+  </svg>`;
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
 function avatarFaceHtml(id){
   const a=avatarById(id);
-  return `<div class="avatarFace" data-initial="${escapeHtml(a.initial)}" style="background:${a.bg}"></div>`;
+  return `<div class="avatarFace"><img class="avatarImg" alt="${escapeHtml(a.name)}" src="${avatarSvgData(a)}"></div>`;
 }
+
 function avatarMiniHtml(id, extraClass=""){
   return `<div class="${extraClass}">${avatarFaceHtml(id)}</div>`;
 }
