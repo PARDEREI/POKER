@@ -268,14 +268,24 @@ import { getDatabase, ref, set, get, update, onValue, off } from "https://www.gs
 // =============================================
 // CONFIGURAÇÃO FIREBASE — SUBSTITUA AQUI
 // =============================================
+const firebaseConfig = {// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "COLE_SUA_API_KEY_AQUI",
-  authDomain: "SEU_PROJETO.firebaseapp.com",
-  databaseURL: "https://SEU_PROJETO-default-rtdb.firebaseio.com",
-  projectId: "SEU_PROJETO",
-  storageBucket: "SEU_PROJETO.appspot.com",
-  messagingSenderId: "SEU_SENDER_ID",
-  appId: "SEU_APP_ID"
+  apiKey: "AIzaSyBOqSvPq9ZrM2WCu1uMjQrxVB8YJv8FTBQ",
+  authDomain: "meu-poker.firebaseapp.com",
+  databaseURL: "https://meu-poker-default-rtdb.firebaseio.com",
+  projectId: "meu-poker",
+  storageBucket: "meu-poker.firebasestorage.app",
+  messagingSenderId: "939226903532",
+  appId: "1:939226903532:web:27a74b7bd073289e0ac6c9"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 };
 // =============================================
 
