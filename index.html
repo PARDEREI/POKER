@@ -1086,6 +1086,123 @@ html,body{
   font-weight:900;
 }
 
+
+/* PERSONAGENS CARTOON */
+.avatarGrid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+}
+.avatarOption{
+  background:rgba(0,0,0,.55);
+  border:1px solid rgba(213,168,62,.35);
+  border-radius:14px;
+  padding:6px 4px;
+  text-align:center;
+  min-height:86px;
+}
+.avatarOption.selected{
+  border-color:#f2d27a;
+  box-shadow:0 0 0 2px rgba(242,210,122,.25),0 0 18px rgba(213,168,62,.25);
+}
+.avatarOption.taken{
+  opacity:.35;
+  filter:grayscale(1);
+}
+.avatarFace{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  margin:0 auto 5px;
+  border:2px solid rgba(242,210,122,.85);
+  background:linear-gradient(135deg,#333,#111);
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 5px 12px rgba(0,0,0,.45), inset 0 -8px 20px rgba(0,0,0,.25);
+}
+.avatarFace:before{
+  content:"";
+  position:absolute;
+  left:13px;
+  top:12px;
+  width:22px;
+  height:24px;
+  border-radius:50%;
+  background:rgba(255,210,150,.9);
+  box-shadow:0 20px 0 7px rgba(20,20,20,.85);
+}
+.avatarFace:after{
+  content:attr(data-initial);
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:7px;
+  text-align:center;
+  font-weight:900;
+  font-size:14px;
+  color:white;
+  text-shadow:0 2px 5px #000;
+}
+.avatarName{
+  font-size:9px;
+  font-weight:900;
+  color:#f7f2e8;
+  text-transform:uppercase;
+  line-height:1.05;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.avatarLock{
+  font-size:8px;
+  color:#ffb0b0;
+  margin-top:2px;
+  font-weight:900;
+}
+.seatAvatar{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  margin:0 auto 4px;
+  border:2px solid rgba(242,210,122,.85);
+  box-shadow:0 5px 12px rgba(0,0,0,.55);
+  position:relative;
+  overflow:hidden;
+}
+.seatAvatar .avatarFace{
+  width:100%;
+  height:100%;
+  border:0;
+  margin:0;
+}
+.seat .seatName,
+.seat .seatChips{
+  position:relative;
+  z-index:3;
+}
+.seat{
+  min-height:112px!important;
+  padding-top:7px!important;
+}
+.seatAction{
+  bottom:-24px!important;
+  z-index:4!important;
+}
+@media(max-width:420px){
+  .avatarGrid{grid-template-columns:repeat(5,1fr);gap:6px}
+  .avatarOption{min-height:76px;padding:5px 3px}
+  .avatarFace{width:40px;height:40px}
+  .avatarFace:before{left:11px;top:10px;width:18px;height:20px}
+  .avatarFace:after{font-size:12px;bottom:6px}
+  .avatarName{font-size:8px}
+  .seatAvatar{width:38px;height:38px;margin-bottom:3px}
+  .seat{min-height:92px!important}
+}
+@media(max-height:720px){
+  .seatAvatar{width:34px;height:34px}
+  .seat{min-height:82px!important}
+}
+
 </style>
 </head>
 
@@ -1136,6 +1253,12 @@ html,body{
           <input id="bb" type="number" value="20">
         </div>
       </div>
+
+      <div class="col">
+        <label>Escolha seu personagem</label>
+        <div id="avatarGridCreate" class="avatarGrid"></div>
+      </div>
+
       <button class="btn gold" onclick="createRoom()">Criar sala</button>
     </div>
   </section>
@@ -1155,6 +1278,13 @@ html,body{
         <label>Código da sala</label>
         <input id="roomCodeInput" class="codeInput" maxlength="4" placeholder="A1B2">
       </div>
+
+      <div class="col">
+        <label>Escolha seu personagem</label>
+        <div id="avatarGridJoin" class="avatarGrid"></div>
+        <div class="small">Cada personagem só pode ser escolhido por uma pessoa na sala.</div>
+      </div>
+
       <button class="btn gold" onclick="joinRoom()">Entrar</button>
       <div id="joinError" class="small" style="color:#ffb0b0"></div>
     </div>
@@ -1316,6 +1446,22 @@ const RANKS = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
 const RV = {2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,J:11,Q:12,K:13,A:14};
 const REDS = new Set(["♥","♦"]);
 
+const AVATARS = [
+  {id:"pac", name:"2PAC", initial:"2", bg:"linear-gradient(135deg,#3a2419,#a76b35)"},
+  {id:"big", name:"BIGGIE", initial:"B", bg:"linear-gradient(135deg,#1b1b1b,#8d5a2b)"},
+  {id:"em", name:"EMINEM", initial:"E", bg:"linear-gradient(135deg,#d9c4a1,#222)"},
+  {id:"snoop", name:"SNOOP", initial:"S", bg:"linear-gradient(135deg,#111,#3b7a42)"},
+  {id:"dre", name:"DR. DRE", initial:"D", bg:"linear-gradient(135deg,#2b1b13,#916139)"},
+  {id:"jay", name:"JAY-Z", initial:"J", bg:"linear-gradient(135deg,#111,#1c2b48)"},
+  {id:"fifty", name:"50 CENT", initial:"5", bg:"linear-gradient(135deg,#1b1b1b,#5f5f5f)"},
+  {id:"kendrick", name:"KENDRICK", initial:"K", bg:"linear-gradient(135deg,#4f2c1d,#efdfc5)"},
+  {id:"travis", name:"TRAVIS", initial:"T", bg:"linear-gradient(135deg,#1c1511,#75543b)"},
+  {id:"post", name:"POST", initial:"P", bg:"linear-gradient(135deg,#d2b28a,#222)"}
+];
+
+let selectedAvatarCreate = "";
+let selectedAvatarJoin = "";
+
 let G = {
   code:"",
   myId:"",
@@ -1355,6 +1501,7 @@ async function createRoom(){
   if(!window.firebaseReady){toast("Firebase ainda carregando");return}
   const name=safeName($("hostName").value);
   if(!name){toast("Digite seu nome");return}
+  if(!selectedAvatarCreate){toast("Escolha um personagem");return}
   G.code=makeCode();
   G.myId=uid();
   G.isHost=true;
@@ -1363,7 +1510,7 @@ async function createRoom(){
     sb:Number($("sb").value||10),
     bb:Number($("bb").value||20)
   };
-  const player={id:G.myId,name,chips:G.cfg.startChips,isHost:true,joinedAt:Date.now()};
+  const player={id:G.myId,name,chips:G.cfg.startChips,isHost:true,joinedAt:Date.now(),avatarId:selectedAvatarCreate};
   await FB.set(roomRef(),{
     code:G.code,
     cfg:G.cfg,
@@ -1385,6 +1532,7 @@ async function joinRoom(){
   const name=safeName($("guestName").value);
   const code=($("roomCodeInput").value||"").trim().toUpperCase();
   if(!name){toast("Digite seu nome");return}
+  if(!selectedAvatarJoin){toast("Escolha um personagem");return}
   if(code.length!==4){toast("Código precisa ter 4 caracteres");return}
   const snap=await FB.get(FB.ref(FB.db,"rooms/"+code));
   if(!snap.exists()){
@@ -1397,11 +1545,16 @@ async function joinRoom(){
     $("joinError").textContent="Sala cheia. Máximo 6 jogadores neste layout.";
     return;
   }
+  if(Object.values(players).some(p=>p.avatarId===selectedAvatarJoin)){
+    $("joinError").textContent="Esse personagem já foi escolhido por outro jogador.";
+    renderAvatarGrid("avatarGridJoin","join",Object.values(players).map(p=>p.avatarId));
+    return;
+  }
   G.code=code;
   G.myId=uid();
   G.isHost=false;
   G.cfg=room.cfg;
-  const player={id:G.myId,name,chips:room.cfg.startChips,isHost:false,joinedAt:Date.now()};
+  const player={id:G.myId,name,chips:room.cfg.startChips,isHost:false,joinedAt:Date.now(),avatarId:selectedAvatarJoin};
   await FB.update(FB.ref(FB.db,"rooms/"+code+"/players"),{[G.myId]:player});
   $("roomCode").textContent=G.code;
   listenRoom();
@@ -1486,7 +1639,39 @@ document.addEventListener("keydown", function(e){
   }
 });
 
+
+async function refreshJoinAvatarsByCode(){
+  const code=($("roomCodeInput")?.value||"").trim().toUpperCase();
+  if(code.length!==4){
+    renderAvatarGrid("avatarGridJoin","join",[]);
+    return;
+  }
+  try{
+    const snap=await FB.get(FB.ref(FB.db,"rooms/"+code));
+    if(!snap.exists()){
+      renderAvatarGrid("avatarGridJoin","join",[]);
+      return;
+    }
+    const room=snap.val();
+    const taken=Object.values(room.players||{}).map(p=>p.avatarId).filter(Boolean);
+    renderAvatarGrid("avatarGridJoin","join",taken);
+  }catch(e){
+    renderAvatarGrid("avatarGridJoin","join",[]);
+  }
+}
+document.addEventListener("input", function(e){
+  if(e.target && e.target.id==="roomCodeInput"){
+    refreshJoinAvatarsByCode();
+  }
+});
+document.addEventListener("DOMContentLoaded", function(){
+  renderAvatarGrid("avatarGridCreate","create");
+  renderAvatarGrid("avatarGridJoin","join",[]);
+});
+
 showScreen("lobby");
+renderAvatarGrid("avatarGridCreate","create");
+renderAvatarGrid("avatarGridJoin","join",[]);
       return;
     }
     G.room=snap.val();
@@ -1512,9 +1697,59 @@ function playersArray(){
   return p.sort((a,b)=>(a.joinedAt||0)-(b.joinedAt||0));
 }
 
+
+function avatarById(id){
+  return AVATARS.find(a=>a.id===id) || AVATARS[0];
+}
+function avatarFaceHtml(id){
+  const a=avatarById(id);
+  return `<div class="avatarFace" data-initial="${escapeHtml(a.initial)}" style="background:${a.bg}"></div>`;
+}
+function avatarMiniHtml(id, extraClass=""){
+  return `<div class="${extraClass}">${avatarFaceHtml(id)}</div>`;
+}
+function renderAvatarGrid(targetId, mode, taken=[]){
+  const target=$(targetId);
+  if(!target)return;
+  const selected = mode==="create" ? selectedAvatarCreate : selectedAvatarJoin;
+  target.innerHTML = AVATARS.map(a=>{
+    const isTaken = taken.includes(a.id);
+    const isSelected = selected===a.id;
+    return `
+      <button type="button" class="avatarOption ${isSelected?'selected':''} ${isTaken?'taken':''}" onclick="selectAvatar('${mode}','${a.id}',${isTaken})">
+        ${avatarFaceHtml(a.id)}
+        <div class="avatarName">${escapeHtml(a.name)}</div>
+        ${isTaken?'<div class="avatarLock">OCUPADO</div>':''}
+      </button>
+    `;
+  }).join("");
+}
+function selectAvatar(mode,id,isTaken){
+  if(isTaken){toast("Esse personagem já foi escolhido");return;}
+  if(mode==="create"){
+    selectedAvatarCreate=id;
+    renderAvatarGrid("avatarGridCreate","create");
+  }else{
+    selectedAvatarJoin=id;
+    renderAvatarGrid("avatarGridJoin","join",getTakenAvatarsFromCurrentRoomCode());
+  }
+}
+window.selectAvatar=selectAvatar;
+
+function getTakenAvatarsFromCurrentRoomCode(){
+  if(!G.room || !G.room.players)return [];
+  const code=($("roomCodeInput")?.value||"").trim().toUpperCase();
+  if(code && code===G.code){
+    return Object.values(G.room.players).map(p=>p.avatarId).filter(Boolean);
+  }
+  return [];
+}
+
 function renderAll(){
   renderWaiting();
   renderGame();
+  renderAvatarGrid("avatarGridCreate","create");
+  renderAvatarGrid("avatarGridJoin","join",G.room&&G.room.players?Object.values(G.room.players).map(p=>p.avatarId).filter(Boolean):[]);
   if(!$("chatModal")?.classList.contains("hidden")) renderChat();
 }
 
@@ -1525,7 +1760,7 @@ function renderWaiting(){
   $("countPlayers").textContent=ps.length+"/6";
   $("playersList").innerHTML=ps.map(p=>`
     <div class="playerLine">
-      <div class="avatar">${escapeHtml((p.name||"?")[0].toUpperCase())}</div>
+      ${avatarMiniHtml(p.avatarId, "avatar")}
       <div class="pName">${escapeHtml(p.name)}</div>
       <div class="pChips">${money(p.chips)}</div>
       ${p.isHost?'<span class="badge">HOST</span>':""}
@@ -1697,6 +1932,7 @@ function renderSeats(gs){
     seatsLayer.innerHTML += `
       <div class="seat pos${pos} ${isTurn?'turn':''} ${folded?'folded':''}">
         <div class="miniCards">${cards}</div>
+        <div class="seatAvatar">${avatarFaceHtml(p.avatarId)}</div>
         <div class="seatName">${p.id===G.myId ? "VOCÊ" : escapeHtml(p.name)}</div>
         <div class="seatChips">${money(p.chips)}</div>
         ${action ? `<div class="seatAction">${escapeHtml(action)}</div>` : ""}
@@ -2070,7 +2306,39 @@ document.addEventListener("keydown", function(e){
   }
 });
 
+
+async function refreshJoinAvatarsByCode(){
+  const code=($("roomCodeInput")?.value||"").trim().toUpperCase();
+  if(code.length!==4){
+    renderAvatarGrid("avatarGridJoin","join",[]);
+    return;
+  }
+  try{
+    const snap=await FB.get(FB.ref(FB.db,"rooms/"+code));
+    if(!snap.exists()){
+      renderAvatarGrid("avatarGridJoin","join",[]);
+      return;
+    }
+    const room=snap.val();
+    const taken=Object.values(room.players||{}).map(p=>p.avatarId).filter(Boolean);
+    renderAvatarGrid("avatarGridJoin","join",taken);
+  }catch(e){
+    renderAvatarGrid("avatarGridJoin","join",[]);
+  }
+}
+document.addEventListener("input", function(e){
+  if(e.target && e.target.id==="roomCodeInput"){
+    refreshJoinAvatarsByCode();
+  }
+});
+document.addEventListener("DOMContentLoaded", function(){
+  renderAvatarGrid("avatarGridCreate","create");
+  renderAvatarGrid("avatarGridJoin","join",[]);
+});
+
 showScreen("lobby");
+renderAvatarGrid("avatarGridCreate","create");
+renderAvatarGrid("avatarGridJoin","join",[]);
 }
 window.leaveRoom=leaveRoom;
 
@@ -2213,7 +2481,39 @@ document.addEventListener("keydown", function(e){
   }
 });
 
+
+async function refreshJoinAvatarsByCode(){
+  const code=($("roomCodeInput")?.value||"").trim().toUpperCase();
+  if(code.length!==4){
+    renderAvatarGrid("avatarGridJoin","join",[]);
+    return;
+  }
+  try{
+    const snap=await FB.get(FB.ref(FB.db,"rooms/"+code));
+    if(!snap.exists()){
+      renderAvatarGrid("avatarGridJoin","join",[]);
+      return;
+    }
+    const room=snap.val();
+    const taken=Object.values(room.players||{}).map(p=>p.avatarId).filter(Boolean);
+    renderAvatarGrid("avatarGridJoin","join",taken);
+  }catch(e){
+    renderAvatarGrid("avatarGridJoin","join",[]);
+  }
+}
+document.addEventListener("input", function(e){
+  if(e.target && e.target.id==="roomCodeInput"){
+    refreshJoinAvatarsByCode();
+  }
+});
+document.addEventListener("DOMContentLoaded", function(){
+  renderAvatarGrid("avatarGridCreate","create");
+  renderAvatarGrid("avatarGridJoin","join",[]);
+});
+
 showScreen("lobby");
+renderAvatarGrid("avatarGridCreate","create");
+renderAvatarGrid("avatarGridJoin","join",[]);
 </script>
 </body>
 </html>
