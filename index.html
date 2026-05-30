@@ -841,6 +841,135 @@ html,body{
   .bottomNav{display:none}
 }
 
+
+/* CORREÇÃO FINAL: BOTÕES DE AÇÃO FIXOS SEMPRE VISÍVEIS */
+#game.active{
+  position:relative;
+  height:100dvh;
+  max-height:100dvh;
+  overflow:hidden;
+  padding-bottom:132px;
+}
+.tableWrap{
+  height:calc(100dvh - 235px)!important;
+  max-height:calc(100dvh - 235px)!important;
+  min-height:250px!important;
+}
+.ovalTable{
+  height:100%!important;
+  max-height:100%!important;
+}
+.bottomArea{
+  position:fixed!important;
+  left:50%!important;
+  bottom:0!important;
+  transform:translateX(-50%)!important;
+  width:100%!important;
+  max-width:540px!important;
+  z-index:9999!important;
+  margin:0!important;
+  padding:6px 8px 8px!important;
+  background:linear-gradient(180deg,rgba(2,8,5,.1),rgba(2,8,5,.98) 18%,#020805 100%)!important;
+  box-shadow:0 -12px 28px rgba(0,0,0,.65)!important;
+}
+.actionPanel{
+  padding:7px!important;
+  border-radius:14px!important;
+  background:rgba(0,0,0,.92)!important;
+}
+.status{
+  font-size:11px!important;
+  margin-bottom:5px!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.actionBtns{
+  display:grid!important;
+  grid-template-columns:1fr 1fr 1fr!important;
+  gap:6px!important;
+}
+.actionBtns .btn{
+  min-height:44px!important;
+  height:44px!important;
+  font-size:13px!important;
+  border-radius:12px!important;
+  padding:5px!important;
+  line-height:1.05!important;
+}
+.actionBtns .btn small{
+  font-size:10px!important;
+}
+.raiseRow{
+  grid-template-columns:42px 1fr 42px 70px!important;
+  gap:5px!important;
+  margin-top:6px!important;
+}
+.raiseRow .btn{
+  min-height:36px!important;
+  height:36px!important;
+  font-size:11px!important;
+  padding:4px!important;
+  border-radius:10px!important;
+}
+.raiseValue{
+  font-size:17px!important;
+}
+#confirmRaiseBtn{
+  min-height:36px!important;
+  height:36px!important;
+  font-size:12px!important;
+  margin-top:5px!important;
+}
+.bottomNav{
+  display:grid!important;
+  grid-template-columns:1fr 1fr 1fr!important;
+  gap:5px!important;
+  padding-top:5px!important;
+}
+.navBtn{
+  min-height:30px!important;
+  height:30px!important;
+  font-size:9px!important;
+  border-radius:10px!important;
+}
+.sidePanels{
+  display:none!important;
+}
+.gameHud{
+  padding-top:5px!important;
+}
+.statsRow{
+  padding-top:4px!important;
+}
+@media(max-height:720px){
+  #game.active{padding-bottom:118px!important;}
+  .tableWrap{
+    height:calc(100dvh - 205px)!important;
+    max-height:calc(100dvh - 205px)!important;
+  }
+  .bottomNav{display:none!important;}
+  .actionBtns .btn{
+    min-height:42px!important;
+    height:42px!important;
+    font-size:12px!important;
+  }
+  .status{font-size:10px!important;}
+}
+@media(max-height:640px){
+  #game.active{padding-bottom:108px!important;}
+  .statsRow{display:none!important;}
+  .tableWrap{
+    height:calc(100dvh - 165px)!important;
+    max-height:calc(100dvh - 165px)!important;
+  }
+  .gameHud{transform:scale(.92);transform-origin:top center;margin-bottom:-6px;}
+  .actionBtns .btn{
+    min-height:40px!important;
+    height:40px!important;
+  }
+}
+
 </style>
 </head>
 
